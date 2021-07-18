@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
+//utility 랑 비슷한 기능 제공 = 서비스.
 @Transactional
 public class MemberService {
 
