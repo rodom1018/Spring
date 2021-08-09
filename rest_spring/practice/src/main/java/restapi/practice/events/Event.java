@@ -2,12 +2,16 @@ package restapi.practice.events;
 
 import lombok.*;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Builder @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter @EqualsAndHashCode(of="id")
+@Entity
 public class Event {
 
+    @Id
+    @GeneratedValue
     private String name;
     private String description;
     private LocalDateTime beginEnrollmentDateTime;
@@ -22,5 +26,7 @@ public class Event {
     private Integer id;
     private boolean offline;
     private boolean free;
-    private EventStatus eventStauts= EventStatus.DRAFT;
+
+    @Enumerated(EnumType.STRING)
+    private EventStatus eventStatus= EventStatus.DRAFT;
 }
