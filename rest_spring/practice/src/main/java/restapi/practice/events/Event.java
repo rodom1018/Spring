@@ -3,6 +3,7 @@ package restapi.practice.events;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Builder @AllArgsConstructor @NoArgsConstructor
@@ -12,6 +13,9 @@ public class Event {
 
     @Id
     @GeneratedValue
+    private Integer id;
+
+    @NotNull
     private String name;
     private String description;
     private LocalDateTime beginEnrollmentDateTime;
@@ -23,7 +27,6 @@ public class Event {
     private int maxPrice;
     private int limitOfEnrollment;
 
-    private Integer id;
     private boolean offline;
     private boolean free;
 
