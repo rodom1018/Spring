@@ -11,6 +11,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import restapi.practice.common.TestDescription;
 
 import java.time.LocalDateTime;
 
@@ -32,6 +33,7 @@ public class EventControllerTests {
     ObjectMapper objectMapper;
 
     @Test
+    @TestDescription("정상적으로 이벤트를 생성하는 테스트")
     public void createEvent() throws Exception{
         //이상한 값(id) 같은것이 들어가면 무시한다.
 
@@ -63,6 +65,7 @@ public class EventControllerTests {
 
 
     @Test
+    @TestDescription("입력 받을 수 없는 이벤트를 생성하는 테스트")
     public void createEvent_bad_request() throws Exception{
         //이상한 값 같은것이 들어가면 bad request 출력
 
@@ -92,9 +95,34 @@ public class EventControllerTests {
     }
 
     @Test
+    @TestDescription("빈 request")
     public void createEvent_Bad_Request_Empty_Input() throws Exception {
         EventDto eventDto = EventDto.builder()
                 .name(null)
+                .build();
+
+        this.mockMvc.perform(post("/api/events")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(this.objectMapper.writeValueAsString(eventDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    @TestDescription("틀린 값 넣었을시 오류!")
+    public void createEvent_Bad_Request_Wrong_Input() throws Exception {
+
+        EventDto eventDto = EventDto.builder()
+                .name("Spring")
+                .description("REST API Development with Spring")
+                .beginEnrollmentDateTime(LocalDateTime.of(2020, 12,23,14,21))
+                .closeEnrollmentDateTime(LocalDateTime.of(2010, 11,25,14,21))
+                .beginEventDateTime(LocalDateTime.of(2020, 12,10,14,21))
+                .endEventDateTime(LocalDateTime.of(2010, 1,20,14,21))
+                .basePrice(100)
+                .maxPrice(200)
+                .limitOfEnrollment(100)
+                .location("노원역")
                 .build();
 
         this.mockMvc.perform(post("/api/events")
