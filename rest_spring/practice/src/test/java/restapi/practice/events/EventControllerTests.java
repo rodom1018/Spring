@@ -1,7 +1,6 @@
 package restapi.practice.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +36,13 @@ public class EventControllerTests {
     public void createEvent() throws Exception{
         //이상한 값(id) 같은것이 들어가면 무시한다.
 
-        Event event = Event.builder()
+        EventDto event = EventDto.builder()
                 .name("Spring")
                 .description("REST API Development with Spring")
-                .beginEnrollmentDateTime(LocalDateTime.of(2018, 11,23,14,21))
-                .closeEnrollmentDateTime(LocalDateTime.of(2018, 11,25,14,21))
-                .beginEventDateTime(LocalDateTime.of(2018, 11,10,14,21))
-                .endEventDateTime(LocalDateTime.of(2018, 11,20,14,21))
+                .beginEnrollmentDateTime(LocalDateTime.of(2018, 11,22,14,21))
+                .closeEnrollmentDateTime(LocalDateTime.of(2018, 11,23,14,21))
+                .beginEventDateTime(LocalDateTime.of(2018, 11,24,14,21))
+                .endEventDateTime(LocalDateTime.of(2018, 11,28,23,40))
                 .basePrice(100)
                 .maxPrice(200)
                 .limitOfEnrollment(100)
@@ -58,8 +57,9 @@ public class EventControllerTests {
                         .content(objectMapper.writeValueAsString(event)))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").value(Matchers.not(100)));
-
+                //.andExpect(jsonPath("id").value(Matchers.not(100)))
+                .andExpect(jsonPath("_links.query-events").exists())
+                .andExpect(jsonPath("_links.update-event").exists());
 
     }
 
