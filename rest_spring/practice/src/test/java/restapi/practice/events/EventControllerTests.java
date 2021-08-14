@@ -18,12 +18,14 @@ import restapi.practice.common.RestDocsConfiguration;
 import restapi.practice.common.TestDescription;
 
 import java.time.LocalDateTime;
+import java.util.stream.IntStream;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -37,6 +39,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(RestDocsConfiguration.class)
 @ActiveProfiles("test")
 public class EventControllerTests {
+
+
+    @Autowired
+    EventRepository eventRepository;
 
     @Autowired
     MockMvc mockMvc;
@@ -193,5 +199,32 @@ public class EventControllerTests {
                         .content(this.objectMapper.writeValueAsString(eventDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0].field").exists());
+    }
+
+    @Test
+    @TestDescription("30개의 이벤트를 10개씩 두번째 페이지 조회하기")
+    public void queryEvents() throws Exception {
+        //Given
+        IntStream.range(0,30).forEach(this::generateEvent);
+
+        //when
+        this.mockMvc.perform(get("/api/events")
+                        .param("page","3")
+                        .param("size","10")
+                        .param("sort", "name, DESC")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+    }
+
+    private void generateEvent(int index) {
+        Event event = Event.builder()
+                .id(index)
+                .name("event"+index)
+                .description("test event")
+                .build();
+
+        this.eventRepository.save(event);
     }
 }
