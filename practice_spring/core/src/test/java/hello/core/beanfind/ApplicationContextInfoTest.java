@@ -23,7 +23,7 @@ public class ApplicationContextInfoTest {
             System.out.println("name = "+beanDefinitionName+" object = "+bean);
         }
     }
-
+/*
     @Test
     @DisplayName("애플리케이션 빈 출력하기")
     public void findApplicationBean(){
@@ -40,5 +40,5 @@ public class ApplicationContextInfoTest {
             }
         }
 
-    }
+    }*/
 }
